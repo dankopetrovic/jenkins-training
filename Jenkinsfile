@@ -1,19 +1,9 @@
 pipeline {
   agent any
   stages {
-        stage('Build') {
+        stage('Cypress tests') {
             steps {
-                sh 'echo "Build"'
-            }
-        }
-        stage('Test') {
-            steps {
-                sh 'echo "Test"'
-            }
-        }
-        stage('Report') {
-            steps {
-                sh 'echo "Report"'
+                sh 'docker run -v $PWD:/e2e -w /e2e cypress/included:12.15.0' 
             }
         }
     }
