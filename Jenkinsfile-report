@@ -1,0 +1,31 @@
+pipeline {
+    agent {
+        docker {
+            image 'cypress-factory:12.15.0'
+            args '-u root --entrypoint=""'
+        }
+    }
+    environment {
+        NO_COLOR=1
+    }
+    stages {
+        stage("Cypress Tests") {
+            steps {
+                sh "npm ls"
+                sh "npx cypress run"
+            }
+        }
+        stage('Generate Report') {
+            steps {
+                sh 'npm run merge_reports'
+                sh 'npm run generate_mochawesome_report'
+            }
+        }
+    }    
+    post {
+        always {
+            zip archive: true, dir: 'mochawesome-report', zipFile: "cypress-report-${env.BUILD_ID}.zip"
+            junit 'cypress/reports/junit/**'
+        }
+    }
+}
