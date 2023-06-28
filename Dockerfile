@@ -1,4 +1,12 @@
-FROM cypress/included:12.15.0
+ARG CHROME_VERSION='107.0.5304.121-1'
+ARG FIREFOX_VERSION='107.0'
+ARG CYPRESS_VERSION='12.15.0'
+
+FROM cypress/factory
+
+COPY . /opt/app
+WORKDIR /opt/app
+RUN npm install --save-dev cypress
 
 ## root user needed to create
 ## and to set user rights to working directory
