@@ -2,7 +2,7 @@ pipeline {
     agent {
         docker {
             image 'cypress-factory:12.15.0'
-            args '-u root --entrypoint=""'
+            args '-u node --entrypoint=""'
         }
     }
     environment {
@@ -11,21 +11,32 @@ pipeline {
     stages {
         stage("Cypress Tests") {
             steps {
-                sh "npm ls"
-                sh "npx cypress run"
+                sh """
+                cp -Rf $WORKSPACE/cypress /opt/app/cypress
+                cd /opt/app && npx cypress run --config video=false
+                """
             }
         }
         stage('Generate Report') {
             steps {
-                sh 'npm run merge_reports'
-                sh 'npm run generate_mochawesome_report'
+                sh """
+                cd /opt/app
+                npx mochawesome-merge /opt/app/cypress/reports/mocha/*.json > /opt/app/cypress/reports/mocha/output.json
+                npx marge /opt/app/cypress/reports/mocha/output.json
+                """
             }
         }
     }    
     post {
         always {
-            zip archive: true, dir: 'mochawesome-report', zipFile: "cypress-report-${env.BUILD_ID}.zip"
-            junit 'cypress/reports/junit/**'
+            sh """
+            mkdir -p $WORKSPACE/reports
+            cp -Rf /opt/app/mochawesome-report $WORKSPACE/reports
+            cp -Rf /opt/app/cypress/reports/junit $WORKSPACE/reports
+            """
+            zip archive: true, dir: 'reports/mochawesome-report', zipFile: "cypress-report-${env.BUILD_ID}.zip"
+            junit 'reports/junit/**'
+            cleanWs()
         }
     }
 }

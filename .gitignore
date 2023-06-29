@@ -6,3 +6,5 @@ cypress/results
 
 //misc
 .DS_Store
+
+mochawesome-report/*
