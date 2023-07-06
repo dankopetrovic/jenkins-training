@@ -9,11 +9,6 @@ pipeline {
         NO_COLOR=1
     }
     stages {
-        stage("Checkout") {
-            steps {
-                git 'https://github.com/dankopetrovic/jenkins-training'
-            }
-        }
         stage("Parallel Tests") {
             matrix {
                 axes {
