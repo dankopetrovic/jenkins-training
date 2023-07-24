@@ -12,7 +12,7 @@ pipeline {
           description: 'Select the environment.'
         )
         booleanParam(
-          name: 'deploy'
+          name: 'deploy',
           defaultValue: false,
           description: 'Deploy to PROD, if all tests are passing'
         )
