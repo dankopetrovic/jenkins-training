@@ -1,0 +1,55 @@
+trigger:
+  none
+
+stages:
+  - stage: 'ParallelTests'
+    displayName: 'Parallel Tests'
+    jobs:
+      - job: 'FirefoxJob'
+        displayName: 'Testing in Firefox'
+        pool: 'Default'
+        steps:
+          - task: CmdLine@2
+            displayName: Installs Cypress
+            inputs:
+              script: npm i
+          - task: CmdLine@2
+            displayName: Verifies Cypress
+            inputs:
+              script: |
+                export CYPRESS_VERIFY_TIMEOUT=120000
+                npx cypress verify
+          - task: CmdLine@2
+            displayName: Displays Cypress Information
+            inputs:
+              script: npx cypress info
+          - task: CmdLine@2
+            displayName: 'Run Cypress tests'
+            inputs:
+              script: npx cypress run --browser firefox
+            env:
+              # avoid warnings about terminal
+              TERM: xterm
+      - job: 'ChromeJob'
+        displayName: 'Testing in Chrome'
+        pool: 'Default'
+        steps:
+          - task: CmdLine@2
+            displayName: Installs Cypress
+            inputs:
+              script: npm i
+          - task: CmdLine@2
+            displayName: Verifies Cypress
+            inputs:
+              script: npx cypress verify
+          - task: CmdLine@2
+            displayName: Displays Cypress Information
+            inputs:
+              script: npx cypress info
+          - task: CmdLine@2
+            displayName: 'Run Cypress tests'
+            inputs:
+              script: npx cypress run --browser chrome
+            env:
+              # avoid warnings about terminal
+              TERM: xterm

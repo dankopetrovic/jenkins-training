@@ -1,0 +1,38 @@
+trigger:
+  none
+  
+variables:
+  buildName: 'Azure DevOps Training'
+  project: 'devops-training'
+
+stages:
+  - stage: Build
+    displayName: 'Build'
+    jobs:
+      - job: BuildJob
+        displayName: 'Build Job'
+        steps:
+          - script: |
+              echo "Running $(buildName), with build number: $(Build.BuildNumber)"
+
+  - stage: Test
+    displayName: 'Test'
+    jobs:
+      - job: TestJob
+        displayName: 'Test Job'
+        steps:
+          - script: |
+              echo "Tests for project: $(project)"
+
+  - stage: Deploy
+    displayName: 'Deploy'
+    jobs:
+      - job: DeployJob
+        displayName: 'Deploy Job'
+        variables:
+          deploy_flag: '-d'
+        steps:
+          - script: |
+              echo "Deploying"
+              echo "Environment variables:"
+              echo "$(env)"

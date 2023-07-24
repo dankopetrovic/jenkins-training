@@ -1,0 +1,13 @@
+steps:
+  - task: CmdLine@2
+    displayName: Installs Cypress
+    inputs:
+      script: npm i
+  - task: CmdLine@2
+    displayName: Verifies Cypress
+    inputs:
+      script: npx cypress verify
+  - task: CmdLine@2
+    displayName: Displays Cypress Information
+    inputs:
+      script: npx cypress info

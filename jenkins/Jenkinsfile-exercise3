@@ -1,0 +1,37 @@
+pipeline {
+    agent any 
+    parameters {
+        string(
+          name: 'buildName',
+          defaultValue: 'Build with parameters',
+          description: 'Enter the name of the build.'
+        )
+        choice(
+          name: 'environment',
+          choices: ['INT', 'QA', 'STAGE', 'PROD'],
+          description: 'Select the environment.'
+        )
+        booleanParam(
+          name: 'deploy'
+          defaultValue: false,
+          description: 'Deploy to PROD, if all tests are passing'
+        )
+    }
+    stages {
+        stage('Build') { 
+            steps {
+                echo "Name of the build: ${params.buildName}"
+            }
+        }
+        stage('Test') { 
+            steps {
+                echo "Run tests on the env: ${params.environment}"
+            }
+        }
+        stage('Deploy') { 
+            steps {
+                echo "Deploy to PROD: ${params.deploy}"
+            }
+        }
+    }
+}

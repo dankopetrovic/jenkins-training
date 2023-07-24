@@ -1,0 +1,27 @@
+def buildName = 'Jenkins Training'
+pipeline {
+    agent any 
+    environment {
+        PROJECT = "jenkins-training"
+    }
+    stages {
+        stage('Build') { 
+            steps {
+                echo "Running ${buildName}, with build number: ${env.BUILD_NUMBER}"
+            }
+        }
+        stage('Test') { 
+            steps {
+                echo "Tests for project: ${PROJECT}"
+            }
+        }
+        stage('Deploy') {
+            environment { 
+                DEPLOY_FLAG = '-d'
+            } 
+            steps {
+                sh 'printenv'
+            }
+        }
+    }
+}

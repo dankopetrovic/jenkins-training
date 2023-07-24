@@ -1,0 +1,53 @@
+trigger:
+  none
+  
+parameters:
+  - name: buildName
+    type: string
+    default: 'Build with parameters'
+    displayName: 'Build Name'
+  - name: environment
+    type: string
+    default: 'INT'
+    displayName: 'Environment'
+    values:
+      - INT
+      - QA
+      - STAGE
+      - PROD
+  - name: deploy
+    type: boolean
+    default: false
+    displayName: 'Deploy to PROD'
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+stages:
+  - stage: Build
+    displayName: 'Build'
+    jobs:
+      - job: BuildJob
+        displayName: 'Build Job'
+        steps:
+          - script: |
+              echo "Name of the build: '${{parameters.buildName}}'"
+
+  - stage: Test
+    displayName: 'Test'
+    jobs:
+      - job: TestJob
+        displayName: 'Test Job'
+        steps:
+          - script: |
+              echo "Run tests on the env: '${{parameters.environment}}'"
+
+  - stage: Deploy
+    displayName: 'Deploy'
+    condition: and(succeeded(), eq('${{parameters.deploy}}', true))
+    jobs:
+      - job: DeployJob
+        displayName: 'Deploy Job'
+        steps:
+          - script: |
+              echo "Deploy to PROD: '${{parameters.deploy}}'"

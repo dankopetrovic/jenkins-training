@@ -1,0 +1,33 @@
+trigger:
+  none
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+stages:
+  - stage: Build
+    displayName: 'Build'
+    jobs:
+      - job: BuildJob
+        displayName: 'Build Job'
+        steps:
+          - script: |
+              echo "Build step"
+
+  - stage: Test
+    displayName: 'Test'
+    jobs:
+      - job: TestJob
+        displayName: 'Test Job'
+        steps:
+          - script: |
+              echo "Test step"
+
+  - stage: Deploy
+    displayName: 'Deploy'
+    jobs:
+      - job: DeployJob
+        displayName: 'Deploy Job'
+        steps:
+          - script: |
+              echo "Deploy step"

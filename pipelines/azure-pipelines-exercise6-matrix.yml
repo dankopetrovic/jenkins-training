@@ -1,0 +1,28 @@
+trigger:
+  none
+
+stages:
+  - stage: ParallelTests
+    displayName: 'Parallel Tests'
+    jobs:
+      - job: 'ParallelTestsJob'
+        displayName: 'Parallel Tests Job'
+        strategy:
+          matrix:
+            Firefox:
+              browser: 'firefox'
+            Chrome:
+              browser: 'chrome'
+        pool: Default
+        steps:
+          - task: CmdLine@2
+            displayName: Installs Cypress
+            inputs:
+              script: npm i
+          - task: CmdLine@2
+            displayName: 'Run Cypress tests'
+            inputs:
+              script: npx cypress run --browser $(browser)
+            env:
+              # avoid warnings about terminal
+              TERM: xterm

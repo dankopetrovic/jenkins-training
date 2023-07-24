@@ -1,0 +1,47 @@
+pipeline {
+    agent {
+        docker {
+            image 'cypress-factory:12.15.0'
+            args '-u node --entrypoint=""'
+        }
+    }
+    environment {
+        NO_COLOR=1
+    }
+    stages {
+        stage("Parallel Tests") {
+            matrix {
+                axes {
+                    axis {
+                        name 'FEATURE'
+                        values '1-getting-started', '2-advanced-examples'
+                    }
+                }
+                stages {
+                    stage("Cypress Tests") {
+                        steps {
+                            sh """
+                            cp -Rf $WORKSPACE/cypress /opt/app/cypress
+                            cd /opt/app && npx cypress run --config video=false --spec \"cypress/e2e/${FEATURE}/*.cy.js\"
+                            """
+                            }
+                        post {
+                            always {
+                                sh """
+                                mkdir -p $WORKSPACE/reports
+                                cp -Rf /opt/app/cypress/reports/junit $WORKSPACE/reports
+                                """
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    post {
+        always {
+            junit 'reports/junit/**'
+            cleanWs()
+        }
+    }
+}

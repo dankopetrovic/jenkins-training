@@ -1,0 +1,27 @@
+pipeline {
+    agent {
+        docker {
+            image 'cypress-factory:12.15.0'
+            args '-u node --entrypoint=""'
+        }
+    }
+    environment {
+        NO_COLOR=1
+    }
+    stages {
+        stage("Parallel Tests") {
+            parallel {
+                stage('Firefox') {
+                    steps {
+                        sh "npx cypress run --browser firefox --config video=false"
+                    }
+                }
+                stage('Chrome') {
+                    steps {
+                        sh "npx cypress run --browser chrome --config video=false"
+                    }
+                }
+            }
+        }
+    }    
+}

@@ -1,0 +1,26 @@
+steps:
+  - task: PublishTestResults@2
+    displayName: Publish Test Results
+    condition: succeededOrFailed()
+    inputs:
+      testResultsFormat: 'JUnit'
+      mergeTestResults: true
+      testResultsFiles: '**/cypress/reports/junit/*.xml'
+  - task: CmdLine@2
+    displayName: 'Generate HTML report'
+    inputs:
+      script: |
+        npm run merge_reports
+        npm run generate_mochawesome_report
+  - task: ArchiveFiles@2
+    inputs:
+      rootFolderOrFile: '$(System.DefaultWorkingDirectory)/mochawesome-report'
+      includeRootFolder: true
+      archiveType: 'zip'
+      archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+      replaceExistingArchive: true
+  - task: PublishBuildArtifacts@1
+    inputs:
+      PathtoPublish: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+      ArtifactName: 'HTML Report'
+      publishLocation: 'Container'

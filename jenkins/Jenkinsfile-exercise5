@@ -1,0 +1,21 @@
+pipeline {
+    agent {
+        docker {
+            image 'cypress-factory:12.15.0'
+            args '-u node --entrypoint=""'
+        }
+    }
+    environment {
+        NO_COLOR=1
+    }
+    stages {
+        stage("Cypress Tests") {
+            steps {
+                sh """
+                cp -Rf $WORKSPACE/cypress /opt/app/cypress
+                cd /opt/app && npx cypress run
+                """
+            }
+        }
+    }    
+}

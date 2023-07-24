@@ -29,6 +29,7 @@ pipeline {
     }    
     post {
         always {
+            //after the tests are run we copy the reports and the screenshots back to the working directory
             sh """
             mkdir -p $WORKSPACE/reports
             cp -Rf /opt/app/mochawesome-report $WORKSPACE/reports
