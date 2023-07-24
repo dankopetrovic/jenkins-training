@@ -13,12 +13,18 @@ pipeline {
             parallel {
                 stage('Firefox') {
                     steps {
-                        sh "npx cypress run --browser firefox --config video=false"
+                        sh """
+                        cp -Rf $WORKSPACE/cypress /opt/app/cypress
+                        cd /opt/app && npx cypress run --browser firefox --config video=false
+                        """
                     }
                 }
                 stage('Chrome') {
                     steps {
-                        sh "npx cypress run --browser chrome --config video=false"
+                        sh """
+                        cp -Rf $WORKSPACE/cypress /opt/app/cypress
+                        cd /opt/app && npx cypress run --browser chrome --config video=false
+                        """
                     }
                 }
             }
